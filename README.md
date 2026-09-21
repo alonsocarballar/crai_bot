@@ -2,7 +2,7 @@
 
 Bot de Telegram que vigila la disponibilidad de salas de trabajo en grupo del **CRAI Antonio de Ulloa** (Biblioteca de la Universidad de Sevilla) y te avisa automáticamente en cuanto se libera una sala que cumpla el día, la hora y el tamaño que le indiques.
 
-**🔗 Bot en Telegram: [@crainotifierbot](https://t.me/crainoifierbot)**
+**🔗 Bot en Telegram: [@crainoifierbot](https://t.me/crainoifierbot)**
 
 ---
 
@@ -87,15 +87,13 @@ El proyecto incluye `Dockerfile` y `docker-compose.yml` listos para desplegar.
 - **Extracción de datos**: `buscar_sala_libre()` parsea la tabla HTML (`table_11`) de la web del CRAI, localiza la columna correspondiente al bloque horario elegido y comprueba el estado de cada sala (`Libre` / `Reservada` / `Cerrada`) y su capacidad mediante regex sobre el texto de la celda.
 - **Radar en segundo plano**: el hilo `vigilante_crai()` agrupa todas las alarmas activas por fecha para minimizar peticiones a la web (una sola petición HTTP por fecha distinta, aunque haya muchos usuarios esperando el mismo día), y revisa cada 60 segundos.
 - **Estado por usuario**: `peticiones_usuarios` y `temp_peticiones` guardan la alarma confirmada y el progreso del asistente de cada `chat_id`, respectivamente.
+- **Robustez frente a varios usuarios**: el escaneo copia el diccionario de peticiones antes de iterarlo (evitando errores si otro usuario modifica su alarma a la vez) y captura las excepciones de envío por usuario individualmente, para que un fallo con un chat concreto no impida notificar al resto.
 
 ---
 
 ## ⚠️ Limitaciones conocidas
 
-- **Concurrencia**: iterar `peticiones_usuarios.values()` sin copiar el diccionario puede provocar un `RuntimeError` si dos usuarios modifican el estado a la vez, lo que detendría el hilo vigilante silenciosamente. Se recomienda usar `list(peticiones_usuarios.values())` o un `threading.Lock()`.
-- **Envío de notificaciones**: un fallo al notificar a un usuario (por ejemplo, si ha bloqueado el bot) puede interrumpir el aviso al resto de usuarios en ese mismo ciclo si no se captura la excepción de forma individual por envío.
-- **Formato de fecha**: el valor enviado en `sl_fecha` (`DD-MM-YYYY`) no se ha podido verificar de forma 100% fiable contra el `value` real del desplegable de la web del CRAI; se recomienda confirmarlo inspeccionando `crai_debug.html` para una fecha distinta a la actual.
-- El bot depende de que la estructura HTML de la web del CRAI (`biblus.us.es`) no cambie; cualquier rediseño de la página de reservas podría romper el parseo.
+- El bot depende de que la estructura HTML de la web del CRAI (`biblus.us.es`) no cambie; cualquier rediseño de la página de reservas (IDs de tabla, clases CSS de estado, formato de las cabeceras de horario) podría romper el parseo y requeriría revisar `buscar_sala_libre()`.
 
 ---
 
