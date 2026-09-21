@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  radar-crai:
+    build: .
+    container_name: radar_crai_bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+    volumes:
+      # Persistir el crai_debug.html entre reinicios (opcional, útil para depurar)
+      - radar_crai_debug:/app
+
+volumes:
+  radar_crai_debug:
