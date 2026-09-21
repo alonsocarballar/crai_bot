@@ -2,7 +2,7 @@
 
 Bot de Telegram que vigila la disponibilidad de salas de trabajo en grupo del **CRAI Antonio de Ulloa** (Biblioteca de la Universidad de Sevilla) y te avisa automáticamente en cuanto se libera una sala que cumpla el día, la hora y el tamaño que le indiques.
 
-**🔗 Bot en Telegram: [@crainoifierbot](https://t.me/crainoifierbot)**
+**🔗 Bot en Telegram: [@crainotifierbot](https://t.me/crainotifierbot)**
 
 ---
 
